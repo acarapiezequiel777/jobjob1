@@ -14,8 +14,7 @@ CREATE TABLE productos(id INT PRIMARY KEY AUTO_INCREMENT,NOMBRE VARCHAR(100),PRE
 INSERT INTO provincias (nombre) VALUES
 ('Buenos Aires'),('Córdoba'),('Santa Fe'),('Mendoza'),('Tucumán');
 
-INSERT INTO ciudades (CODIGOPOSTAL, id_provincia) VALUES
-(1000, 1), (5000, 2), (2000, 3), (5500, 4), (4000, 5); 
+INSERT INTO ciudades (CODIGOPOSTAL, id_provincia) VALUES(1000, 1), (5000, 2), (2000, 3), (5500, 4), (4000, 5); 
 
 INSERT INTO clientes (DNI, nombre, email, telefono, direccion, id_ciudad) VALUES
 (12345678, 'Juan Pérez', 'juan.perez@example.com', '1112345678', 'Av. Siempre Viva 123', 1),
