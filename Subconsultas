@@ -18,9 +18,9 @@
 3 – SELECT * FROM clientes WHERE id IN (SELECT cliente FROM compras WHERE producto = 5);
 4 – SELECT * FROM provincias WHERE poblacion > (SELECT AVG(poblacion) FROM provincias);
 5 – SELECT * FROM productos WHERE precio =(SELECT precio FROM productos WHERE descripcion = "birome azul"); 
-6 – SELECT * FROM ciudades WHERE provincia =(SELECT  
-7 – 
-8 – 
+6 – SELECT * FROM ciudades WHERE provincia =(SELECT id FROM provincias WHERE nombre = "Buenos Aires");
+7 – SELECT * FROM clientes WHERE id NOT IN (SELECT cliente FROM compras);
+8 – SELECT * FROM clientes WHERE id IN (SELECT id 
 9 – 
 10 – 
 11 – 
