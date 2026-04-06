@@ -1,0 +1,31 @@
+1 – Clientes que viven en buenos aires
+2 – Productos con precio mayor al promedio
+3 – Clientes que compraron el producto con id 5
+4 – Provincias con población mayor al promedio
+5 – Productos con el mismo precio que la birome azul
+6 – ciudades de la provincia Buenos Aires
+7 – clientes que NO hicieron compras
+8 –  Mostrar Los clientes con el apellido mas común  
+9 – clientes que viven en la misma ciudad que Juan Perez
+10 – Productos con stock menor al promedio
+11 – Ciudades con mas población que rosario
+12 – Clientes que compraron algo
+13 – productos que nunca se compraron
+14 – Provincias de la región Pampa
+
+1 – SELECT * FROM clientes WHERE localidad IN(SELECT id FROM ciudades WHERE nombre="Buenos Aires";
+2 – SELECT * FROM productos WHERE precio >(SELECT AVG(precio) FROM productos);
+3 – SELECT * FROM clientes WHERE id IN (SELECT cliente FROM compras WHERE producto = 5);
+4 – SELECT * FROM provincias WHERE poblacion > (SELECT AVG(poblacion) FROM provincias);
+5 – SELECT * FROM productos WHERE precio =(SELECT precio FROM productos WHERE descripcion = "birome azul"); 
+6 – SELECT * FROM ciudades WHERE provincia =(SELECT  
+7 – 
+8 – 
+9 – 
+10 – 
+11 – 
+12 – 
+13 – 
+14 – 
+
+
