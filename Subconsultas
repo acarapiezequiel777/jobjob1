@@ -20,12 +20,12 @@
 5 – SELECT * FROM productos WHERE precio =(SELECT precio FROM productos WHERE descripcion = "birome azul"); 
 6 – SELECT * FROM ciudades WHERE provincia =(SELECT id FROM provincias WHERE nombre = "Buenos Aires");
 7 – SELECT * FROM clientes WHERE id NOT IN (SELECT cliente FROM compras);
-8 – SELECT * FROM clientes WHERE id IN (SELECT id 
-9 – 
-10 – 
-11 – 
-12 – 
-13 – 
-14 – 
+8 – SELECT * FROM clientes WHERE apellido = (SELECT apellido FROM clientes GROUP BY apellido ORDER BY COUNT(*) DESC LIMIT 1);
+9 – SELECT * FROM clientes WHERE localidad =(SELECT localidad FROM clientes WHERE nombre = 'Juan' AND apellido = 'Perez');
+10 –SELECT * FROM productos WHERE stock < (SELECT AVG(stock) FROM productos);
+11 – SELECT * FROM ciudades WHERE poblacion > (SELECT poblacion FROM ciudades WHERE nombre = 'Rosario');
+12 – SELECT * FROM clientes WHERE id IN (SELECT cliente FROM compras);
+13 – SELECT * FROM productos WHERE id NOT IN (SELECT producto FROM compras);
+14 – SELECT nombre FROM provincias WHERE id =(SELECT id from provincias where region = "La Pampa");
 
 
