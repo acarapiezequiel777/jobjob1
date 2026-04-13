@@ -1,0 +1,20 @@
+1) Crear una vista "nombre_cliente" con nombre y apellido de clientes
+2) auto insertarte dentro de la vista nombre_cliente
+3) borrar la vista nombre_cliente
+4) Crear un vista de los productos BIC
+5) crear una vista "porteños" de los clientes de buenos aires (buenos aires y ciudad autonoma)
+6) eliminar de la vista porteños a los que no vivan en ciudad autonoma
+7) vista de los productos con precio mayor a 100
+8) vista de los clientes y la ciudad en la que viven
+9) vista de las ciudades y las provincias en las que se ubican
+10) vista de los clientes con la fecha de su ultima compra realizada
+1-CREATE VIEW Nombre_Cliente AS SELECT nombre, apellido FROM clientes;
+2-INSERT INTO nombre_cliente VALUES ("ezequiel","acarapi")
+3-DROP VIEW nombre_cliente;
+4-CREATE VIEW productos_BIC AS SELECT * FROM productos WHERE marca="BIC"
+5-
+6-
+7-
+8-
+9-
+10-
