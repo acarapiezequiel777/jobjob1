@@ -12,7 +12,7 @@
 2-INSERT INTO nombre_cliente VALUES ("ezequiel","acarapi")
 3-DROP VIEW nombre_cliente;
 4-CREATE VIEW productos_BIC AS SELECT * FROM productos WHERE marca="BIC"
-5-
+5-CREATE VIEW porteños AS SELECT * FROM clientes WHERE localidad= "Buenos Aires" AND "CABA";
 6-
 7-
 8-
