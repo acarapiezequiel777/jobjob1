@@ -13,23 +13,8 @@
 3-DROP VIEW nombre_cliente;
 4-CREATE VIEW productos_BIC AS SELECT * FROM productos WHERE marca="BIC"
 5-CREATE VIEW porteños AS SELECT * FROM clientes WHERE localidad= "Buenos Aires" AND "CABA";
-6-CREATE VIEW porteños AS
-SELECT clientes.*
-FROM clientes
-JOIN ciudades ON clientes.localidad = ciudades.id
-JOIN provincias ON ciudades.provincia = provincias.id
-WHERE provincias.nombre = 'Ciudad Autonoma de Buenos Aires';
-7-
-8-
-9-CREATE VIEW ciudades_provincias AS
-SELECT ciudades.nombre AS ciudad, provincias.nombre AS provincia
-FROM ciudades
-JOIN provincias ON ciudades.provincia = provincias.id;
-10-CREATE VIEW clientes_ultima_compra AS
-SELECT clientes.nombre, clientes.apellido,
-(
-  SELECT MAX(fecha)
-  FROM compras
-  WHERE compras.cliente = clientes.id
-) AS ultima_compra
-FROM clientes;
+6-CREATE VIEW porteños AS SELECT clientes.* FROM clientes JOIN ciudades ON clientes.localidad = ciudades.id JOIN provincias ON ciudades.provincia = provincias.id WHERE provincias.nombre = 'Ciudad Autonoma de Buenos Aires';
+7-CREATE VIEW productos_caros AS SELECT * FROM productos WHERE precio>100;
+8-CREATE VIEW clientes_ciudad AS SELECT clientes.apellido,ciudades.nombre FROM clientes JOIN ciudades ON clientes.localidad = ciudades.id;
+9-CREATE VIEW ciudades_provincias AS SELECT ciudades.nombre AS ciudad, provincias.nombre AS provincia FROM ciudades JOIN provincias ON ciudades.provincia = provincias.id;
+10-CREATE VIEW clientes_ultima_compra AS SELECT clientes.nombre, clientes.apellido, (SELECT MAX(fecha) FROM compras WHERE compras.cliente = clientes.id) AS ultima_compra FROM clientes;
