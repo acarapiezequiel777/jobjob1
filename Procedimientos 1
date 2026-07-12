@@ -1,0 +1,70 @@
+--1. Agregar una provincia
+DELIMITER //
+CREATE PROCEDURE sp_agregar_provincia(IN p_nombre VARCHAR(60),IN p_capital VARCHAR(60),IN p_gobernador VARCHAR(60),IN p_poblacion INT,IN  p_superficie INT,IN p_autonoma_desde DATE)
+BEGIN
+INSERT INTO provincias (nombre,capital,gobernador,poblacion,superficie,autonoma_desde) VALUES(p_nombre,p_capital,p_gobernador,p_poblacion,p_superficie,p_autonoma_desde);
+END //
+DELIMITER ;
+--2. Agregar una ciudad
+DELIMITER //
+CREATE PROCEDURE sp_agregar_ciudad(IN c_nombre VARCHAR(60),IN c_provincia INT,IN c_poblacion INT,IN c_superficie INT,IN c_fundacion DATE,IN c_intendente VARCHAR(60),IN c_altitud INT)
+BEGIN
+INSERT INTO ciudades(nombre, provincia, poblacion, superficie, fundacion, intendente, altitud) VALUES (c_nombre, c_provincia, c_poblacion, c_superficie, c_fundacion, c_intendente, c_altitud);
+END //
+DELIMITER ;
+--3. Agregar un cliente
+DELIMITER //
+CREATE PROCEDURE sp_agregar_cliente(IN c_nombre VARCHAR(60),IN c_apellido VARCHAR(60), IN c_tel VARCHAR(20),IN c_calle VARCHAR(40),IN c_altura INT,IN c_localidad INT)
+BEGIN
+INSERT INTO clientes(nombre,apellido,tel,calle,altura,localidad) VALUES (c_nombre,c_apellido,c_tel,c_calle,c_altura,c_localidad);
+END //
+DELIMITER ;
+--4. Agregar un producto
+DELIMITER //
+CREATE PROCEDURE sp_agregar_producto(IN p_descripcion VARCHAR(60),IN p_marca VARCHAR(40), IN p_precio DECIMAL(7,2),IN p_stock INT)
+BEGIN
+INSERT INTO productos(descripcion,marca,precio,stock) VALUES (p_descripcion,p_marca,p_precio,p_stock);
+END//
+DELIMITER ;
+--5. Actualizar el precio de un producto
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_precio(IN p_id INT, IN p_precio DECIMAL(7,2))
+BEGIN
+UPDATE productos set precio = p_precio where id = p_id;
+END//
+DELIMITER ;
+--6. Actualizar el stock de un producto
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_stock(IN p_id INT, IN p_stock INT)
+BEGIN
+UPDATE productos set stock = p_stock where id = p_id;
+END//
+DELIMITER ;
+--7. Eliminar un cliente
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_cliente(IN c_id INT)
+BEGIN
+DELETE FROM clientes where id = c_id;
+END//
+DELIMITER;
+--8. Mostrar todos los productos
+DELIMITER //
+CREATE PROCEDURE sp_mostrar_productos()
+BEGIN
+SELECT * from productos;
+END//
+DELIMITER ;
+--9. Buscar una ciudad por nombre
+DELIMITER //
+CREATE PROCEDURE sp_buscar_ciudad(IN c_nombre VARCHAR(60))
+BEGIN
+SELECT * from ciudades where nombre = c_nombre;
+END//
+DELIMITER ;
+--10. Mostrar las ciudades de una provincia
+DELIMITER //
+CREATE PROCEDURE sp_mostrar_ciudades_pro(IN p_provincia INT)
+BEGIN
+SELECT * from ciudades where provincia = p_provincia;
+END//
+DELIMITER ;
