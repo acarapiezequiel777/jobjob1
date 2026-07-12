@@ -3,30 +3,156 @@ DELIMITER//
 CREATE FUNCTION cantidad_total_comprada(id_producto INT)
 RETURNS INT
 BEGIN
-  RETURN (SELECT SUM(cant) FROM compras WHERE producto = id_producto);
+RETURN (SELECT SUM(cant) FROM compras WHERE producto = id_producto);
 END//
 DELIMITER;
 
 2- Crear una función cantidad_compras_cliente(id_cliente) que devuelva cuántas compras realizó un cliente.
+DELIMITER//
+CREATE FUNCTION cantidad_compras_cliente(id_cliente INT)
+RETURNS INT
+BEGIN
+RETURN (SELECT COUNT(*) FROM compras WHERE cliente = id_cliente);
+END//
+DELIMITER;
 
 3- Crear una función ultima_compra(id_cliente) que devuelva la fecha de la última compra de un cliente.
+DELIMITER//
+CREATE FUNCTION ultima_compra(id_cliente INT)
+RETURNS DATETIME
+BEGIN
+RETURN (SELECT MAX(fecha) FROM compras WHERE cliente = id_cliente);
+END//
+DELIMITER;
+
 4- Crear una función dias_ultima_compra(id_cliente) que devuelva cuántos días pasaron desde la última compra.
+DELIMITER;
+CREATE FUNCTION dias_ultima_compra(id_cliente INT)
+RETURNS INT
+BEGIN
+  DECLARE fecha_ultima DATETIME;
+  DECLARE dias INT;
+  SELECT MAX(fecha) INTO fecha_ultima FROM compras WHERE cliente = id_cliente;
+  SET dias = DATEDIFF(CURDATE(), fecha_ultima);
+  RETURN dias;
+END//
+DELIMITER;
 5- Crear una función total_gastado(id_cliente) que calcule cuánto dinero gastó un cliente.
+DELIMITER//
+CREATE FUNCTION total_gastado(id_cliente INT)
+RETURNS DECIMAL(10,2)
+BEGIN
+  RETURN (SELECT SUM(cant * p.precio) FROM compras c JOIN productos p ON c.producto = p.id WHERE c.cliente = id_cliente);
+END//
+DELIMITER;
 6- Crear una función cliente_premium(id_cliente) que devuelva:
  * "Premium" si gastó más de 5000
  * "Normal" en caso contrario.
+DELIMITER//
+CREATE FUNCTION cliente_premium(id_cliente INT)
+RETURNS VARCHAR(10)
+BEGIN
+DECLARE gasto DECIMAL(10,2);
+SET gasto =total_gastado(id_cliente);
+  IF gasto > 5000 THEN
+  RETURN 'Premium';
+ELSE
+RETURN 'Normal';
+END IF;
+END//
+DELIMITER;
 7- Crear una función provincia_cliente(id_cliente) que devuelva la provincia donde vive el cliente.
+DELIMITER //
+
+CREATE FUNCTION provincia_cliente(id_cliente INT)
+RETURNS VARCHAR(60)
+BEGIN
+  RETURN (SELECT p.nombre FROM clientes cl JOIN ciudades ci ON cl.localidad = ci.id JOIN provincias p ON ci.provincia = p.id WHERE cl.id = id_cliente);
+END//
+DELIMITER;
 8- Crear una función region_cliente(id_cliente) que devuelva la región del cliente (Pampa, NOA, Cuyo, etc.).
+DELIMITER//
+CREATE FUNCTION region_cliente(id_cliente INT)
+RETURNS VARCHAR(20)
+BEGIN
+  RETURN ( SELECT p.region FROM clientes cl JOIN ciudades ci ON cl.localidad = ci.id
+JOIN provincias p ON ci.provincia = p.id WHERE cl.id = id_cliente);
+END//
+DELIMITER;
 9- Crear una función clientes_por_provincia(id_provincia) que devuelva cuántos clientes viven en esa provincia.
+DELIMITER//
+CREATE FUNCTION clientes_por_provincia(id_provincia INT)
+RETURNS INT
+BEGIN
+  RETURN ( SELECT COUNT(*) FROM clientes cl JOIN ciudades ci ON cl.localidad = ci.id WHERE ci.provincia = id_provincia);
+END//
+DELIMITER;
 10- Crear una función producto_mas_vendido() que devuelva el nombre del producto más vendido.
+DELIMITER//
+CREATE FUNCTION producto_mas_vendido()
+RETURNS VARCHAR(60)
+BEGIN
+  RETURN (SELECT p.descripcion FROM productos p JOIN compras c ON p.id = c.producto GROUP BY p.id ORDER BY SUM(c.cant) DESC LIMIT 1);
+END//
+DELIMITER;
 11- Crear una función producto_menos_vendido() que devuelva el nombre del producto menos vendido.
+DELIMITER//
+CREATE FUNCTION producto_menos_vendido()
+RETURNS VARCHAR(60)
+BEGIN
+  RETURN (SELECT p.descripcion FROM productos p JOIN compras c ON p.id = c.producto GROUP BY p.id ORDER BY SUM(c.cant) ASC LIMIT 1);
+END//
+DELIMITER;
 12- Crear una función promedio_precios() que devuelva el promedio de precios de todos los productos.
+DELIMITER//
+CREATE FUNCTION promedio_precios()
+RETURNS DECIMAL(10,2)
+BEGIN
+RETURN (SELECT AVG(precio) FROM productos);
+END//
+DELIMITER;
 13- Crear una función comparar_promedio(id_producto) que devuelva:
 * "Arriba del promedio"
 * "Debajo del promedio"
 según el precio del producto comparado con el promedio general.
+DELIMITER//
+CREATE FUNCTION comparar_promedio(id_producto INT)
+RETURNS VARCHAR(20)
+BEGIN
+DECLARE prom DECIMAL(10,2);
+DECLARE precio_producto DECIMAL(10,2);
+SET prom = promedio_precios();
+SELECT precio INTO precio_producto FROM productos WHERE id = id_producto;
+IF precio_producto > prom THEN
+  RETURN 'Arriba del promedio';
+ELSE
+  RETURN 'Debajo del promedio';
+END IF;
+END//
+DELIMITER;
 14- Crear una función alerta_stock(id_producto) que devuelva:
 "REPOSICION URGENTE" si stock = 0
 "STOCK BAJO" si stock < 20
 "OK" en otro caso.
+DELIMITER//
+CREATE FUNCTION alerta_stock(id_producto INT)
+RETURNS VARCHAR(20)
+BEGIN
+  DECLARE stock_actual INT;
+  SELECT stock INTO stock_actual FROM productos WHERE id = id_producto;
+IF stock_actual = 0 THEN
+ RETURN 'REPOSICION URGENTE';
+ELSEIF stock_actual < 20 THEN
+ RETURN 'STOCK BAJO';
+ELSE
+ RETURN 'OK';
+END IF;
+END//
+DELIMITER;
 15- Crear una función cantidad_productos_cliente(id_cliente) que devuelva la suma total de productos comprados por un cliente.
+CREATE FUNCTION cantidad_productos_cliente(id_cliente INT)
+RETURNS INT
+BEGIN
+RETURN (SELECT SUM(cant) FROM compras WHERE cliente = id_cliente);
+END//
+DELIMITER ;
