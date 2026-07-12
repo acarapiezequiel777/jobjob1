@@ -1,0 +1,32 @@
+1- Crear una función cantidad_total_comprada(id_producto) que sume cuántas unidades se vendieron de un producto usando la tabla compras.
+DELIMITER//
+CREATE FUNCTION cantidad_total_comprada(id_producto INT)
+RETURNS INT
+BEGIN
+  RETURN (SELECT SUM(cant) FROM compras WHERE producto = id_producto);
+END//
+DELIMITER;
+
+2- Crear una función cantidad_compras_cliente(id_cliente) que devuelva cuántas compras realizó un cliente.
+
+3- Crear una función ultima_compra(id_cliente) que devuelva la fecha de la última compra de un cliente.
+4- Crear una función dias_ultima_compra(id_cliente) que devuelva cuántos días pasaron desde la última compra.
+5- Crear una función total_gastado(id_cliente) que calcule cuánto dinero gastó un cliente.
+6- Crear una función cliente_premium(id_cliente) que devuelva:
+ * "Premium" si gastó más de 5000
+ * "Normal" en caso contrario.
+7- Crear una función provincia_cliente(id_cliente) que devuelva la provincia donde vive el cliente.
+8- Crear una función region_cliente(id_cliente) que devuelva la región del cliente (Pampa, NOA, Cuyo, etc.).
+9- Crear una función clientes_por_provincia(id_provincia) que devuelva cuántos clientes viven en esa provincia.
+10- Crear una función producto_mas_vendido() que devuelva el nombre del producto más vendido.
+11- Crear una función producto_menos_vendido() que devuelva el nombre del producto menos vendido.
+12- Crear una función promedio_precios() que devuelva el promedio de precios de todos los productos.
+13- Crear una función comparar_promedio(id_producto) que devuelva:
+* "Arriba del promedio"
+* "Debajo del promedio"
+según el precio del producto comparado con el promedio general.
+14- Crear una función alerta_stock(id_producto) que devuelva:
+"REPOSICION URGENTE" si stock = 0
+"STOCK BAJO" si stock < 20
+"OK" en otro caso.
+15- Crear una función cantidad_productos_cliente(id_cliente) que devuelva la suma total de productos comprados por un cliente.
