@@ -1,0 +1,80 @@
+1- Crear una función Región_Cliente(cliente) que utilice provincia_cliente(cliente)
+DELIMITER//
+CREATE FUNCTION Región_Cliente(id_cliente INT)
+RETURNS VARCHAR(40)
+BEGIN
+DECLARE resultado VARCHAR(60);
+SET resultado = provincia_cliente(id_cliente);
+RETURN(SELECT region FROM provincias WHERE nombre = resultado);
+END//
+DELIMITER;
+2 - Crear una procedimiento que permita mostrar todos los objetos en el "nivel del cliente" -> mediante una función se determina el nivel del cliente
+Bronce: gasto menos de 1000$
+Plata: gasto menos de 3000$
+ORO: gasto menos de 5000$
+PLATINO: gasto mas de 5000$
+el procedimiento recibirá como parámetro el rango del cliente y mostrara:
+Bronce: los objetos de hasta 10$
+Plata: los objetos de hasta   100$
+ORO: los objetos de hasta 500$
+PLATINO: los objetos de hasta 500$
+
+DELIMITER //
+CREATE FUNCTION nivel_cliente(id_cliente INT)
+RETURNS VARCHAR(20)
+BEGIN
+DECLARE gasto DECIMAL(10,2);
+SET gasto = total_gastado(id_cliente);
+IF gasto < 1000 THEN
+RETURN 'Bronce';
+ELSEIF gasto < 3000 THEN
+RETURN 'Plata';
+ELSEIF gasto < 5000 THEN
+RETURN 'Oro';
+ELSE
+RETURN 'Platino';
+END IF;
+END//
+DELIMITER ;
+
+3- Crear una función analisis_cliente(id_cliente) que devuelva:
+        Juan Pérez | Gasto: $5400 | Premium  ->  Si es premium se debe determinar con una función aparte, y lo es si gasto mas de 5000$
+        
+DELIMITER//
+CREATE FUNCTION analisis_cliente(id_cliente INT)
+RETURNS VARCHAR(200)
+BEGIN
+DECLARE nombrec VARCHAR(60);
+DECLARE apellidoc VARCHAR(60);
+SELECT nombre,apellido INTO nombrec,apellidoc FROM clientes WHERE id = id_cliente;
+RETURN CONCAT(nombrec,'  ' ,apellidoc,  ' | Gasto: $',total_gastado(id_cliente),' | ',cliente_premium(id_cliente));
+END//
+DELIMITER ;
+
+4- Crear una función estado_producto(id_producto) que devuelva:
+          Producto: Resma A4 | Vendidos: 120 | Stock: 15 | STOCK BAJO -> usando una función alerta_stock(id_producto) que devuelva:
+"REPOSICION URGENTE" si stock = 0
+"STOCK BAJO" si stock < 20
+"OK" en otro caso.
+
+DELIMITER//
+CREATE FUNCTION estado_producto(id_producto INT)
+RETURNS VARCHAR(200)
+BEGIN
+DECLARE descripcion_producto VARCHAR(60);
+DECLARE vendidos INT;
+DECLARE stock_producto INT;
+SELECT descripcion, stock INTO descripcion_producto, stock_producto FROM productos WHERE id = id_producto;
+SELECT SUM(cant) INTO vendidos FROM compras WHERE producto = id_producto;
+RETURN CONCAT('Producto: ', descripcion_producto, ' | Vendidos: ',  vendidos,' | Stock: ',  stock_producto,' | '',alerta_stock(id_producto));
+END//
+DELIMITER;
+
+5- Validador de Contraseñas Seguras
+El escenario: Al registrar un nuevo usuario, el sistema debe validar si la contraseña elegida cumple con los requisitos mínimos de seguridad
+Función Auxiliar 1 (tiene_largo_correcto): Recibe el texto de la contraseña y devuelve true si tiene 8 caracteres o más, o false si es más corta.
+Función Auxiliar 2 (tiene_numero): Recibe el texto de la contraseña y devuelve true si contiene al menos un número (del 0 al 9), o false si son solo letras.
+Función Auxiliar 3 (tiene_caracter_especial) Recibe el texto de la contraseña y devuelve true si contiene al menos un carácter especial (! - % & $) o false si son solo letras.
+Función Principal (es_password_valida): Recibe la contraseña. Llama a las tres funciones auxiliares. Si todas devuelven true, la función principal devuelve "Contraseña Aceptada". Si alguna falla, devuelve "Contraseña Insegura".
+->
+palabra_A_Comparar   REGEXP´[caracteres]´
