@@ -1,0 +1,212 @@
+1) Eliminar clientes que nunca realizaron compras.
+DELIMITER//
+CREATE PROCEDURE eliminar_clientes_sin_compras()
+BEGIN
+DELETE FROM clientes WHERE id NOT IN (SELECT cliente FROM compras);
+END//
+DELIMITER ;
+2) Mostrar todas las provincias de una región.
+DELIMITER//
+CREATE PROCEDURE provincias_region(IN p_region VARCHAR(20))
+BEGIN
+SELECT * FROM provincias
+WHERE region = p_region;
+END//
+DELIMITER ;
+3) Cambiar el gobernador de una provincia.
+DELIMITER//
+CREATE PROCEDURE nuevo_gobernador(
+IN p_id INT,
+IN p_gobernador VARCHAR(60))
+BEGIN
+ UPDATE provincias
+SET gobernador = p_gobernador WHERE id = p_id;
+END//
+DELIMITER;
+4) Agregar un producto verificando que el precio sea positivo.
+DELIMITER //
+CREATE PROCEDURE producto_positivo(
+IN p_descripcion VARCHAR(60),
+IN p_marca VARCHAR(40),
+IN p_precio DECIMAL(7,2),
+IN p_stock INT)
+BEGIN
+IF p_precio > 0 THEN
+INSERT INTO productos(descripcion,marca,precio,stock)
+VALUES(p_descripcion, p_marca, p_precio,p_stock);
+END IF;
+END//
+DELIMITER;
+5) Mostrar las compras realizadas entre dos fechas.
+DELIMITER//
+CREATE PROCEDURE compras_fechas(
+IN p_fecha1 DATE,
+IN p_fecha2 DATE)
+BEGIN
+SELECT * FROM compras WHERE fecha BETWEEN p_fecha1 AND p_fecha2;
+END//
+DELIMITER ;
+6) Eliminar ciudades con menos de cierta población.
+DELIMITER//
+CREATE PROCEDURE eliminar_ciudades(
+IN p_poblacion INT)
+BEGIN
+DELETE FROM ciudades WHERE poblacion < p_poblacion;
+END //
+DELIMITER ;
+7) Aumentar el stock de todos los productos de una marca.
+DELIMITER//
+CREATE PROCEDURE aumentar_stock(
+IN p_marca VARCHAR(40),
+IN p_cantidad INT)
+BEGIN
+UPDATE productos SET stock = stock + p_cantidad WHERE marca = p_marca;
+END//
+DELIMITER;
+8) Mostrar todos los productos de una marca.
+DELIMITER//
+CREATE PROCEDURE productos_marca(
+IN p_marca VARCHAR(40))
+BEGIN
+SELECT * FROM productos WHERE marca = p_marca;
+END//
+DELIMITER;
+9) Eliminar todos los productos sin stock.
+DELIMITER //
+CREATE PROCEDURE eliminar_sin_stock()
+BEGIN
+DELETE FROM productos WHERE stock = 0;
+END//
+DELIMITER ;
+10) Registrar una compra asignando automáticamente la fecha actual.
+DELIMITER//
+CREATE PROCEDURE sp_registrar_compra(
+IN p_cliente INT,
+IN p_producto INT,
+IN p_cant INT)
+BEGIN
+INSERT INTO compras(cliente,producto,cant)
+VALUES(p_cliente,p_producto,p_cant);
+END //
+DELIMITER;
+11) Mostrar el producto más caro.
+DELIMITER //
+CREATE PROCEDURE sp_producto_mas_caro()
+BEGIN
+SELECT * FROM productos ORDER BY precio DESC LIMIT 1;
+END//
+DELIMITER ;
+12) Reducir el stock de un producto.
+DELIMITER//
+CREATE PROCEDURE reducir_stock(
+IN p_id INT,
+IN p_cantidad INT)
+BEGIN
+UPDATE productos SET stock = stock - p_cantidad WHERE id = p_id;
+END//
+DELIMITER;
+13) Eliminar provincias sin ciudades asociadas.
+DELIMITER //
+CREATE PROCEDURE eliminar_provincias_sin_ciudades()
+BEGIN
+DELETE FROM provincias WHERE id NOT IN (SELECT provincia FROM ciudades);
+END//
+DELIMITER;
+14) Mostrar todas las compras de un cliente.
+DELIMITER //
+CREATE PROCEDURE compras_cliente(IN p_cliente INT)
+BEGIN
+SELECT * FROM compras WHERE cliente = p_cliente;
+END //
+DELIMITER ;
+15) Agregar una provincia.
+DELIMITER //
+CREATE PROCEDURE sp_agregar_provincia(
+IN p_nombre VARCHAR(60),
+IN p_capital VARCHAR(60),
+IN p_gobernador VARCHAR(60),
+IN p_poblacion INT,
+IN p_superficie INT,
+IN p_autonoma_desde DATE)
+BEGIN
+INSERT INTO provincias(nombre,capital,gobernador,poblacion,superficie,autonoma_desde) VALUES(p_nombre,p_capital,p_gobernador,p_poblacion,p_superficie,p_autonoma_desde);
+END //
+DELIMITER;
+16) Eliminar productos de una marca.
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_productos_marca(IN p_marca VARCHAR(40))
+BEGIN
+DELETE FROM productos WHERE marca = p_marca;
+END//
+DELIMITER;
+17) Cambiar el precio de un producto.
+DELIMITER //
+CREATE PROCEDURE sp_cambiar_precio(
+IN p_id INT,
+IN p_precio DECIMAL(7,2))
+BEGIN
+UPDATE productos SET precio = p_precio WHERE id = p_id;
+END//
+DELIMITER ;
+18) Eliminar compras anteriores a una fecha.
+DELIMITER //
+CREATE PROCEDURE eliminar_compras_fecha(IN p_fecha DATE)
+BEGIN
+DELETE FROM compras WHERE fecha <p_fecha;
+END//
+DELIMITER ;
+19) Mostrar todos los productos con stock menor a una cantidad recibida.
+DELIMITER //
+CREATE PROCEDURE sp_stock_menor(IN p_stock INT)
+BEGIN
+SELECT * FROM productos WHERE stock < p_stock;
+END//
+DELIMITER ;
+20) Agregar un producto con stock inicial recibido por parámetro.
+DELIMITER //
+CREATE PROCEDURE sp_agregar_producto_stock(
+IN p_descripcion VARCHAR(60),
+IN p_marca VARCHAR(40),
+IN p_precio DECIMAL(7,2),
+IN p_stock INT)
+BEGIN
+INSERT INTO productos(descripcion,marca,precio,stock) VALUES(p_descripcion,p_marca,p_precio,p_stock);
+END//
+DELIMITER ;
+21) Eliminar clientes que no realizan compras desde determinada fecha.
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_clientes_fecha(IN p_fecha DATE)
+BEGIN
+DELETE FROM clientes WHERE id NOT IN(SELECT cliente FROM compras WHERE fecha >= p_fecha);
+END//
+DELIMITER ;
+22) Marcar un producto como fuera de stock.
+DELIMITER //
+CREATE PROCEDURE sp_fuera_stock(IN p_id INT)
+BEGIN
+UPDATE productos
+SET stock = 0
+WHERE id = p_id;
+END//
+DELIMITER ;
+23) Registrar una compra.
+DELIMITER //
+CREATE PROCEDURE sp_registrar_compra(
+IN p_cliente INT,
+IN p_producto INT,
+IN p_cant INT)
+BEGIN
+INSERT INTO compras(cliente,producto,cant) VALUES(p_cliente,p_producto,p_cant);
+END//
+DELIMITER ;
+24) Aumentar todos los precios de una marca un porcentaje determinado.
+DELIMITER//
+CREATE PROCEDURE sp_aumentar_precio_marca(
+IN p_marca VARCHAR(40),
+IN p_porcentaje DECIMAL(5,2))
+BEGIN
+UPDATE productos
+SET precio = precio + (precio * p_porcentaje / 100)
+WHERE marca = p_marca;
+END//
+DELIMITER;
