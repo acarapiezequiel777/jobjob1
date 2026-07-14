@@ -63,12 +63,12 @@ RETURNS VARCHAR(200)
 BEGIN
 DECLARE descripcion_producto VARCHAR(60);
 DECLARE vendidos INT;
-DECLARE stock_producto INT;
-SELECT descripcion, stock INTO descripcion_producto, stock_producto FROM productos WHERE id = id_producto;
-SELECT SUM(cant) INTO vendidos FROM compras WHERE producto = id_producto;
-RETURN CONCAT('Producto: ', descripcion_producto, ' | Vendidos: ',  vendidos,' | Stock: ',  stock_producto,' | '',alerta_stock(id_producto));
+DECLARE stock_actual INT;
+SELECT descripcion,stock INTO descripcion_producto, stock_actual FROM productosWHERE id = id_producto;
+SELECT SUM(cant)INTO vendidos FROM compras WHERE producto = id_producto;
+RETURN CONCAT('Producto: ', descripcion_producto,' | Vendidos: ', vendidos,' | Stock: ', stock_actual,' | ', alerta_stock(id_producto));
 END//
-DELIMITER;
+DELIMITER ;
 
 5- Validador de Contraseñas Seguras
 El escenario: Al registrar un nuevo usuario, el sistema debe validar si la contraseña elegida cumple con los requisitos mínimos de seguridad
@@ -78,3 +78,52 @@ Función Auxiliar 3 (tiene_caracter_especial) Recibe el texto de la contraseña 
 Función Principal (es_password_valida): Recibe la contraseña. Llama a las tres funciones auxiliares. Si todas devuelven true, la función principal devuelve "Contraseña Aceptada". Si alguna falla, devuelve "Contraseña Insegura".
 ->
 palabra_A_Comparar   REGEXP´[caracteres]´
+
+DELIMITER//
+CREATE FUNCTION aux1(contrasena VARCHAR(100))
+RETURNS BOOLEAN
+BEGIN
+IF LENGTH(contrasena) >= 8 THEN
+RETURN TRUE;
+ELSE
+RETURN FALSE;
+END IF;
+END//
+DELIMITER;
+
+DELIMITER//
+CREATE FUNCTION aux2(contrasena VARCHAR(100))
+RETURNS BOOLEAN
+BEGIN
+IF contrasena REGEXP '[0-9]' THEN
+RETURN TRUE;
+ELSE
+RETURN FALSE;
+END IF;
+END//
+DELIMITER;
+
+DELIMITER //
+CREATE FUNCTION aux3(contrasena VARCHAR(100))
+RETURNS BOOLEAN
+BEGIN
+IF contrasena REGEXP '[!%&$]' THEN
+RETURN TRUE;
+ELSE
+ RETURN FALSE;
+END IF;
+END//
+DELIMITER ;
+DELIMITER//
+CREATE FUNCTION contrasena_valida(contrasena VARCHAR(100))
+RETURNS VARCHAR(30)
+BEGIN
+IF aux1(contrasena)
+AND aux2(contrasena)
+AND aux3(contrasena) THEN
+RETURN 'Contraseña Aceptada';
+ELSE
+RETURN 'Contraseña Insegura';
+END IF;
+END//
+DELIMITER;
