@@ -1,0 +1,253 @@
+1) Mostrar todas las compras con nombre de cliente y descripción del producto.
+DELIMITER//
+CREATE PROCEDURE compras_clientes()
+BEGIN
+SELECT c.nombre,c.apellido,p.descripcion,co.cant,co.fecha FROM compras co JOIN clientes c ON co.cliente=c.id
+JOIN productos p ON co.producto=p.id;
+END//
+DELIMITER;
+2) Calcular el precio final de una compra.
+DELIMITER//
+CREATE PROCEDURE precio_compra(IN p_compra INT)
+BEGIN
+SELECT p.descripcion,co.cant,p.precio,(co.cant*p.precio) AS total FROM compras co
+JOIN productos p ON co.producto=p.id
+WHERE co.id=p_compra;
+END//
+DELIMITER ;
+3) Verificar si una compra puede realizarse.
+DELIMITER //
+CREATE PROCEDURE realizar_compra(IN p_cliente VARCHAR(60),IN p_producto INT,IN p_cantidad INT)
+BEGIN
+DECLARE v_cliente INT;
+DECLARE v_stock INT;
+SELECT id INTO v_cliente FROM clientes WHERE nombre=p_cliente;
+SELECT stock INTO v_stock FROM productos WHERE id=p_producto;
+IF v_cliente IS NOT NULL AND v_stock>=p_cantidad THEN
+INSERT INTO compras(cliente,producto,cant) VALUES(v_cliente,p_producto,p_cantidad);
+UPDATE productos SET stock=stock-p_cantidad WHERE id=p_producto;
+SELECT 'Compra realizada' AS mensaje;
+ELSE
+SELECT 'No se puede realizar la compra' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+4) Calcular el total gastado por un cliente.
+DELIMITER //
+CREATE PROCEDURE gastado_cliente(IN p_nombre VARCHAR(60))
+BEGIN
+SELECT SUM(co.cant*p.precio) AS total_gastado FROM compras co JOIN clientes c ON co.cliente=c.id JOIN productos p ON co.producto=p.id WHERE c.nombre=p_nombre;
+END//
+DELIMITER;
+5) Mostrar región de cada cliente.
+DELIMITER//
+CREATE PROCEDURE region_clientes()
+BEGIN
+SELECT c.nombre,p.region
+FROM clientes c JOIN ciudades ci ON c.localidad=ci.id JOIN provincias p ON ci.provincia=p.id;
+END//
+DELIMITER;
+6) Determinar si un producto es rentable según sus ventas.
+DELIMITER //
+CREATE PROCEDURE producto_rentable(IN p_producto INT)
+BEGIN
+DECLARE vendidos INT;
+SELECT SUM(cant) INTO vendidos FROM compras WHERE producto=p_producto;
+IF vendidos>=20 THEN
+SELECT 'Producto rentable' AS mensaje;
+ELSE
+SELECT 'Producto poco rentable' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+7) Obtener la población total de una región.
+DELIMITER //
+CREATE PROCEDURE poblacion_region(IN p_region VARCHAR(20))
+BEGIN
+SELECT SUM(poblacion) AS poblacion_total FROM provincias WHERE region=p_region;
+END//
+DELIMITER;
+8) Verificar si un cliente existe.
+DELIMITER //
+CREATE PROCEDURE cliente_existe(IN p_nombre VARCHAR(60))
+BEGIN
+DECLARE resultado VARCHAR(60);
+SELECT nombre INTO resultado FROM clientes WHERE nombre = p_nombre LIMIT 1;
+IF resultado IS NULL THEN
+SELECT 'No existe' AS mensaje;
+ELSE
+SELECT 'Existe' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+
+9) Mostrar total gastado por cliente.
+DELIMITER //
+CREATE PROCEDURE gastado_cliente(IN p_nombre VARCHAR(60))
+BEGIN
+SELECT SUM(co.cant*p.precio) AS total_gastado FROM compras co JOIN clientes c ON co.cliente=c.id JOIN productos p ON co.producto=p.id WHERE c.nombre=p_nombre;
+END//
+DELIMITER;
+
+10) Mostrar cliente, ciudad y provincia.
+DELIMITER //
+CREATE PROCEDURE info_cliente()
+BEGIN
+SELECT c.nombre,ci.nombre AS ciudad,p.nombre AS provincia FROM clientes c JOIN ciudades ci ON c.localidad=ci.id JOIN provincias p ON ci.provincia=p.id;
+END//
+DELIMITER ;
+
+11) Calcular el valor total del inventario (precio * stock).
+DELIMITER //
+CREATE PROCEDURE valor_total()
+BEGIN
+SELECT SUM(precio*stock) AS valor_total FROM productos;
+END//
+DELIMITER ;
+
+12) Verificar si una ciudad supera cierta población.
+DELIMITER //
+CREATE PROCEDURE poblacion_ciudad(IN p_ciudad VARCHAR(60),IN p_poblacion INT)
+BEGIN
+DECLARE total INT;
+SELECT poblacion INTO total FROM ciudades WHERE nombre=p_ciudad;
+IF total>p_poblacion THEN
+SELECT 'La poblacion es mayor' AS mensaje;
+ELSE
+SELECT 'La poblacion es menor' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+
+13) Mostrar cantidad comprada por cliente.
+DELIMITER //
+CREATE PROCEDURE cantidad_comprada()
+BEGIN
+SELECT c.nombre,c.apellido,SUM(co.cant) AS total_comprado
+FROM clientes c JOIN compras co ON co.cliente=c.id GROUP BY c.id,c.nombre,c.apellido;
+END//
+DELIMITER ;
+
+14) Informar si un producto necesita reposición.
+DELIMITER //
+CREATE PROCEDURE reposicion(IN p_id INT)
+BEGIN
+DECLARE stock_actual INT;
+SELECT stock INTO stock_actual FROM productos WHERE id=p_id;
+IF stock_actual<=10 THEN
+SELECT 'Necesita mas stock' AS mensaje;
+ELSE
+SELECT 'No necesita stock' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+
+15) Calcular cuánto dinero representan los productos de una marca.
+DELIMITER //
+CREATE PROCEDURE marca_precio(IN p_marca VARCHAR(60))
+BEGIN
+SELECT SUM(precio*stock) AS total FROM productos WHERE marca=p_marca;
+END//
+DELIMITER ;
+
+16) Verificar si un producto tiene stock suficiente.
+DELIMITER //
+CREATE PROCEDURE stock_suficiente(IN p_id INT,IN p_cantidad INT)
+BEGIN
+DECLARE stock_actual INT;
+SELECT stock INTO stock_actual FROM productos WHERE id=p_id;
+IF stock_actual>=p_cantidad THEN
+SELECT 'Hay stock suficiente' AS mensaje;
+ELSE
+SELECT 'No hay stock suficiente' AS mensaje;
+END IF;
+END//
+DELIMITER ;
+
+17) Mostrar provincia e intendente de la ciudad donde vive cada cliente.
+DELIMITER //
+CREATE PROCEDURE cliente_provincia_intendente()
+BEGIN
+SELECT c.nombre,p.nombre AS provincia,ci.intendente
+FROM clientes c JOIN ciudades ci ON c.localidad=ci.id JOIN provincias p ON ci.provincia=p.id;
+END//
+DELIMITER ;
+
+18) Aplicar el IVA a un producto y mostrarlo.
+DELIMITER //
+CREATE PROCEDURE iva_producto(IN p_producto INT)
+BEGIN
+SELECT descripcion,precio*1.21 AS precio_con_iva FROM productos WHERE id=p_producto;
+END//
+DELIMITER ;
+
+19) Obtener la compra más grande realizada.
+DELIMITER //
+CREATE PROCEDURE compra_mas_grande()
+BEGIN
+SELECT c.nombre,co.cant AS compra_mas_grande FROM clientes c JOIN compras co ON co.cliente=c.id ORDER BY co.cant DESC LIMIT 1;
+END//
+DELIMITER ;
+
+20) Mostrar clientes agrupados por provincia.
+DELIMITER //
+CREATE PROCEDURE clientes_provincia()
+BEGIN
+SELECT p.nombre AS provincia,COUNT(c.id) AS cantidad_clientes FROM clientes c JOIN ciudades ci ON c.localidad=ci.id JOIN provincias p ON ci.provincia=p.id GROUP BY p.nombre;
+END//
+DELIMITER ;
+
+21) Detectar posibles fraudes o errores: Mostrar todos los clientes que hayan realizado dos o más compras en un intervalo de tiempo menor a 5 minutos.
+DELIMITER//
+CREATE PROCEDURE posibles_fraudes()
+BEGIN
+SELECT c.nombre,c.apellido,c1.fecha,c2.fecha
+FROM compras c1
+JOIN compras c2 ON c1.cliente=c2.cliente JOIN clientes c ON c.id=c1.cliente WHERE c1.id<c2.id
+AND TIMESTAMPDIFF(MINUTE,c1.fecha,c2.fecha)<5;
+END//
+DELIMITER ;
+
+22) Generar un ranking de marcas: Listar el "Top 3" de las marcas más vendidas de cada región, mostrando el total recaudado por cada una.
+DELIMITER //
+CREATE PROCEDURE ranking_marcas()
+BEGIN
+SELECT pr.region,p.marca,SUM(co.cant*p.precio) AS total
+FROM compras co JOIN productos p ON co.producto=p.id JOIN clientes c ON co.cliente=c.id JOIN ciudades ci ON c.localidad=ci.id JOIN provincias pr ON ci.provincia=pr.id GROUP BY pr.region,p.marca ORDER BY total DESC LIMIT 3;
+END//
+DELIMITER ;
+
+23) Calcular la retención de clientes: Determinar cuántos clientes que compraron en el mes anterior volvieron a realizar una compra en el mes actual.
+DELIMITER//
+CREATE PROCEDURE retencion_clientes()
+BEGIN
+SELECT COUNT(DISTINCT cliente) AS clientes_retenidos FROM compras WHERE MONTH(fecha)=MONTH(CURDATE());
+END//
+DELIMITER ;
+
+24) Actualizar precios por inflación: Aumentar un 15% los productos de una marca específica, pero solo si pertenecen a provincias con una población mayor a 1.000.000 de habitantes.
+DELIMITER //
+CREATE PROCEDURE aumentar_precios(IN p_marca VARCHAR(40))
+BEGIN
+UPDATE productos
+SET precio=precio*1.15 WHERE marca=p_marca;
+END//
+DELIMITER;
+
+25) Reporte de estacionalidad: Mostrar cuál es el mes del año en el que cada marca registra su mayor volumen de ventas.
+DELIMITER//
+CREATE PROCEDURE ventas_mes()
+BEGIN
+SELECT p.marca,MONTH(co.fecha) AS mes,SUM(co.cant) AS ventas 
+FROM compras co JOIN productos p ON co.producto=p.id 
+GROUP BY p.marca,MONTH(co.fecha) ORDER BY ventas DESC;
+END//
+DELIMITER ;
+
+26) Identificar "Clientes Embajadores": Mostrar aquellos clientes que han comprado absolutamente todos los productos disponibles de una marca específica.
+DELIMITER //
+CREATE PROCEDURE clientes_embajadores(IN p_marca VARCHAR(40))
+BEGIN
+SELECT c.nombre,c.apellido FROM clientes c JOIN compras co ON c.id=co.cliente JOIN productos p ON co.producto=p.idWHERE p.marca=p_marca GROUP BY c.id,c.nombre,c.apellido;
+END//
+DELIMITER;
