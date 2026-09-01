@@ -18,19 +18,32 @@ close productos_cursor;
 END//
 DELIMITER;
 
-
-
-
-
-
-
-
 Usando el cursor anterior, mostrar el subtotal del precio total de todos los productos
 
 Ejercicio 2 — Recorrer provincias
 Crear un procedimiento que recorra todas las provincias y muestre:
 
 Provincia: Buenos Aires | Capital: La Plata | Población: 17500000
+
+-DELIMITER// 
+CREATE PROCEDURE recorrer_provincias();
+BEGIN 
+DECLARE @provincia
+DECLARE @capital
+DECLARE @poblacion
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Ejercicio 3 — Productos sin stock
 Crear un procedimiento que recorra productos y muestre únicamente los productos cuyo stock sea igual a 0.
@@ -74,3 +87,120 @@ Cliente: Juan Pérez
 Producto: Notebook Lenovo
 Cantidad: 2
 Fecha: 2026-08-31 14:30:00
+
+
+
+
+-- Cursores
+-- Los cursores en SQL son punteros que permiten recorrer un conjunto de resultados fila por fila,
+-- lo que es útil cuando se necesita procesar cada fila individualmente en lugar de trabajar con
+-- todo el conjunto de resultados a la vez.
+-- Nos permite utilizar el contenido de una tabla fila a fila y realizar operaciones especificas para cada una
+
+--Syntaxis básica para declarar un cursor en SQL:
+DECLARE nombre_cursor CURSOR FOR
+   SELECT id, precio, nombre_producto
+   FROM productos
+
+    DECLARE @id INT
+    DECLARE @precio DECIMAL(10, 2) 
+    DECLARE @nombre_producto VARCHAR(100);
+    DECLARE @subtotal DECIMAL(10, 2) = 0;
+
+    OPEN nombre_cursor;
+        FETCH NEXT FROM nombre_cursor INTO @id, @precio, @nombre_producto;
+        --DECLARE CONTINUE HANDLER FOR NOT FOUND SET var = 1;
+        --WHILE @@FETCH_STATUS = 0
+         BEGIN 
+           SELECT @id AS 'ID', @precio AS 'Precio', 
+           @nombre_producto AS 'Nombre del Producto', @subtotal AS 'Subtotal';
+
+           SET @subtotal = @subtotal + @precio;
+           FETCH NEXT FROM nombre_cursor INTO @id, @precio, @nombre_producto;
+        END
+    CLOSE nombre_cursor;
+    
+DEALLOCATE nombre_cursor;
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE clientes (
+id INT PRIMARY KEY AUTO_INCREMENT,
+nombre VARCHAR(60),
+apellido VARCHAR(60),
+
+tel VARCHAR(20),
+calle VARCHAR(40),
+altura INT,
+localidad INT,
+FOREIGN KEY (localidad) REFERENCES ciudades(id)
+);
+
+1 - chocolate | 100 | 10 -> 1000
+2 - harina | 20 | 10     -> 1200
+3 - agua | 10 | 10       -> 1300
+
+ DECLARE CURSOR nombre_cursor FOR 
+    SELECT nombre, apellido FROM clientes;
+
+    DECLARE @nombre VARCHAR(60);
+    DECLARE @apellido VARCHAR(60);
+
+    OPEN nombre_cursor;
+    FETCH NEXT FROM nombre_cursor INTO @nombre, @apellido;
+        BEGIN
+            DECLARE CONTINUE HANDLER FOR NOT FOUND loop Boolean = false;
+         --   WHILE @@FETCH_STATUS = 0    
+            WHILE loop
+                BEGIN
+                    SELECT @nombre AS 'Nombre', @apellido AS 'Apellido' WHERE
+                    WHERE tel > 10000000
+                    FETCH NEXT FROM nombre_cursor INTO @nombre, @apellido;
+                END
+
+            END WHILE; 
+        END
+    CLOSE nombre_cursor;
+    
+    DEALLOCATE nombre_cursor;
+
+
+
+
+------------------------------------------------
+  DECLARE CURSOR subtotal FOR 
+    SELECT stock, precio FROM productos;
+
+    DECLARE @stock INT;
+    DECLARE @precio DECIMAL(10, 2);
+
+    OPEN subtotal;
+    FETCH NEXT FROM subtotal INTO @stock, @precio;
+        BEGIN
+            DECLARE CONTINUE HANDLER FOR NOT FOUND loop Boolean = false;
+         --   WHILE @@FETCH_STATUS = 0    
+            WHILE loop
+                BEGIN
+                    DECLARE subtotal = 0 Decimal(10, 2);
+
+                        SELECT precio as 'precio', stock as 'stock', subtotal as 'subtotal'
+                        SET subtotal = subtotal + (stock * precio);
+
+                    FETCH NEXT FROM subtotal INTO @stock, @precio;
+                END
+
+            END WHILE; 
+        END
+    CLOSE nombre_cursor;
+    
+    DEALLOCATE nombre_cursor;
