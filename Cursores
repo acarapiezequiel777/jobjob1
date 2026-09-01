@@ -1,7 +1,22 @@
 Ejercicio 1 — Recorrer productos
 Crear un procedimiento listar_productos() que utilice un cursor para recorrer todos los productos de la tabla productos.
-- DECLARE 
-
+- DELIMITER // 
+CREATE PROCEDURE listar_productos() 
+BEGIN
+DECLARE @nombre VARCHAR(20)
+DECLARE @id INT;
+DECLARE @stock INT;
+DECLARE CURSOR FOR SELECT nombre,id,stock FROM productos;
+OPEN productos_cursor;
+FETCH NEXT FROM productos_cursor INTO @id, @stock, @nombre;
+         BEGIN 
+           SELECT @id AS 'ID', @stock AS 'Stock', 
+           @nombre AS 'Nombre del Producto';
+WHILE @@fetch_status=0
+        END
+close productos_cursor;
+END//
+DELIMITER;
 
 
 
