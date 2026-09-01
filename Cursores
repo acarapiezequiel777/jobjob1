@@ -1,0 +1,61 @@
+Ejercicio 1 — Recorrer productos
+Crear un procedimiento listar_productos() que utilice un cursor para recorrer todos los productos de la tabla productos.
+- DECLARE 
+
+
+
+
+
+
+
+
+
+Usando el cursor anterior, mostrar el subtotal del precio total de todos los productos
+
+Ejercicio 2 — Recorrer provincias
+Crear un procedimiento que recorra todas las provincias y muestre:
+
+Provincia: Buenos Aires | Capital: La Plata | Población: 17500000
+
+Ejercicio 3 — Productos sin stock
+Crear un procedimiento que recorra productos y muestre únicamente los productos cuyo stock sea igual a 0.
+
+Ejercicio 4 — Clasificar productos
+Recorrer todos los productos y mostrar:
+
+Producto: Pan
+Precio: 1000
+Categoría: BARATO
+
+Las categorías serán:
+Menor a $10.000 → BARATO
+Entre $10.000 y $50.000 → MEDIO
+Mayor a $50.000 → CARO
+
+Ejercicio 5 — Calcular el valor total del stock
+Crear un procedimiento valor_stock() que recorra todos los productos y calcule valor total
+(producto * stock)
+de todos los productos, mostrando el subtotal por producto y al final le valor total de todo el inventario
+
+Ejercicio 6 — Aumentar precios
+Crear un procedimiento que recorra todos los productos.
+
+Si el precio es menor a $10.000, aumentar el precio un 20%.
+Si es mayor o igual a $10.000, aumentar el precio un 10%.
+
+Ejercicio 7 — Actualizar stock
+Recorrer todos los productos y realizar:
+
+Si stock < 5 → sumar 10 unidades.
+Si stock >= 5 AND stock < 20 → sumar 5 unidades.
+Si stock >= 20 → no modificar.
+Todo debe hacerse mediante un cursor.
+
+Ejercicio 8 — Listar compras con información del cliente
+Crear un procedimiento que recorra compras y muestre:
+
+Compra #1
+Cliente: Juan Pérez
+Producto: Notebook Lenovo
+Cantidad: 2
+Fecha: 2026-08-31 14:30:00
