@@ -47,6 +47,24 @@ DECLARE @poblacion
 
 Ejercicio 3 — Productos sin stock
 Crear un procedimiento que recorra productos y muestre únicamente los productos cuyo stock sea igual a 0.
+-DELIMITER 
+CREATE PROCEDURE producto_procedimiento()
+BEGIN 
+DECLARE @stock int;
+DECLARE @nombre varchar(50);
+DECLARE @id int;
+DECLARE stock_cursor CURSOR FOR SELECT stock,nombre,id FROM productos 
+OPEN stock_cursor;
+FETCH next from @stock INTO @stock, @nombre, @id;
+WHILE @@fetch_status= 0;
+if @stock = 0 THEN 
+    SELECT @nombre AS "Nombre de producto", @id AS "ID", @stock AS "Stock";
+END;
+FETCH NEXT FROM stock_cursor INTO @stock,@nombre,@id;
+ENDE;
+CLOSE stock_cursor;
+END//
+DELIMITER;
 
 Ejercicio 4 — Clasificar productos
 Recorrer todos los productos y mostrar:
